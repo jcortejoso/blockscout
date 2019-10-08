@@ -72,31 +72,18 @@ defmodule BlockScoutWeb.API.RPC.ContractController do
     with {:address_param, {:ok, address_param}} <- fetch_address(params),
          {:format, {:ok, address_hash}} <- to_address_hash(address_param) do
 
-      #with {:proxy_contract, {:ok, address}} <-  Chain.get_proxied_address(address_hash) do
-           
-
-      Logger.info("----->Address Hash: #{address_hash}")
-      #proxy_contract = Chain.get_proxied_address(address_hash)
-      #Logger.info("----->Just after get_proxied_address #{proxy_contract}")
+      Logger.debug("Address Hash: #{address_hash}")
       
       address = with {:ok, proxy_contract} <- Chain.get_proxied_address(address_hash) do
-        Logger.info("----->!!! Implementation address FOUND in proxy table")
+        Logger.info("Implementation address FOUND in proxy table")
         Chain.address_hash_to_address_with_source_code(proxy_contract)
       else 
         {:error, :not_found} ->
-          Logger.info("----->Implementation address NOT found in proxy table")
+          Logger.info("Implementation address NOT found in proxy table")
           Chain.address_hash_to_address_with_source_code(address_hash)
       end
 
-      #address = if nil == proxy_contract do
-      #  Logger.info("----->Implementation address NOT found in proxy table")
-      #  Chain.address_hash_to_address_with_source_code(address_hash)
-      #else
-      #  Logger.info("----->!!! Implementation address FOUND in proxy table")
-      #  Chain.address_hash_to_address_with_source_code(proxy_contract.implementation_address)
-      #end
-
-      Logger.info("----->Address: #{address}")
+      Logger.debug("Address: #{address}")
 
       render(conn, :getsourcecode, %{
         contract: address
