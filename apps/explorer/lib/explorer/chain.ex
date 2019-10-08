@@ -3,6 +3,8 @@ defmodule Explorer.Chain do
   The chain context.
   """
 
+  require Logger
+
   import Ecto.Query,
     only: [
       from: 2,
@@ -38,6 +40,7 @@ defmodule Explorer.Chain do
     Import,
     InternalTransaction,
     Log,
+    ProxyContract,
     SmartContract,
     StakingPool,
     Token,
@@ -2667,6 +2670,24 @@ defmodule Explorer.Chain do
           address_with_smart_contract
         end
     end
+  end
+
+  #@spec get_proxied_address(Hash.Address.t()) :: ProxyContract.t() | nil
+  def get_proxied_address(address_hash) do
+    Logger.info("--getProxiedAddress: #{address_hash}")
+    query =
+      from(contract in ProxyContract,
+        where: contract.proxy_address == ^address_hash
+      )
+    Logger.info("--after query")
+
+    #Repo.one(query)
+    query
+    |> Repo.one()
+    |> case do
+      nil -> {:error, :not_found}
+      proxy_contract -> {:ok, proxy_contract.implementation_address}
+    end    
   end
 
   @spec address_hash_to_smart_contract(Hash.Address.t()) :: SmartContract.t() | nil

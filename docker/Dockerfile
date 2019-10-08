@@ -1,6 +1,6 @@
 FROM bitwalker/alpine-elixir-phoenix:1.9.0
 
-RUN apk --no-cache --update add alpine-sdk gmp-dev automake libtool inotify-tools autoconf python
+RUN apk --no-cache --update add alpine-sdk gmp-dev automake libtool inotify-tools autoconf python vim postgresql-client
 
 EXPOSE 4000
 
@@ -14,6 +14,7 @@ ADD apps/block_scout_web/mix.exs ./apps/block_scout_web/
 ADD apps/explorer/mix.exs ./apps/explorer/
 ADD apps/ethereum_jsonrpc/mix.exs ./apps/ethereum_jsonrpc/
 ADD apps/indexer/mix.exs ./apps/indexer/
+ADD docker/env.rc ./
 
 RUN mix do deps.get, deps.compile
 
