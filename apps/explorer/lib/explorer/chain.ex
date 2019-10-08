@@ -1019,7 +1019,7 @@ defmodule Explorer.Chain do
     |> join_associations(necessity_by_association)
     |> with_decompiled_code_flag(hash, query_decompiled_code_flag)
     |> Repo.one()
-    |> case do
+    |> case do:debugger.start()
       nil -> {:error, :not_found}
       address -> {:ok, address}
     end
