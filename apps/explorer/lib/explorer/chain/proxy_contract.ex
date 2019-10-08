@@ -11,7 +11,8 @@ defmodule Explorer.Chain.ProxyContract do
 
   use Explorer.Schema
 
-  alias Explorer.Chain.{Address, ContractMethod, DecompiledSmartContract, Hash}
+  alias Explorer.Chain.{Hash}
+
 
   @typedoc """
   * `proxy_address` - address of the proxy contract.
@@ -36,10 +37,9 @@ defmodule Explorer.Chain.ProxyContract do
 #    )
 #    field(:proxy_address, :string)
 #    field(:implementation_address, :string)
+
     field(:proxy_address, Hash.Address)
     field(:implementation_address, Hash.Address)
-#    field(:proxy_address, type: Hash.Address)
-#    field(:implementation_address, type: Hash.Address)
 
   end
 
@@ -53,3 +53,4 @@ defmodule Explorer.Chain.ProxyContract do
   end
 
 end
+
