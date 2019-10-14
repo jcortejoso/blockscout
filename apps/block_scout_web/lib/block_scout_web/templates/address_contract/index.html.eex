@@ -32,7 +32,7 @@
           </dl>
           <%= if @is_proxy do %>
             <dl class="row">
-            <dt class="col-md-2 text-muted"><%= gettext "Is Proxied?" %></dt>
+            <dt class="col-md-2 text-muted"><%= gettext "Is a Proxy?" %></dt>
             <dd class="col-md-4"><%= @is_proxy %></dd>
             <div class="d-none d-sm-block d-md-none"></br></br></div>
             <div class="d-block d-sm-none"></br></br></div>
