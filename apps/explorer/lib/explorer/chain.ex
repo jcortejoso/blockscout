@@ -3,8 +3,6 @@ defmodule Explorer.Chain do
   The chain context.
   """
 
-  require Logger
-
   import Ecto.Query,
     only: [
       from: 2,
@@ -1019,7 +1017,7 @@ defmodule Explorer.Chain do
     |> join_associations(necessity_by_association)
     |> with_decompiled_code_flag(hash, query_decompiled_code_flag)
     |> Repo.one()
-    |> case do:debugger.start()
+    |> case do
       nil -> {:error, :not_found}
       address -> {:ok, address}
     end
@@ -2672,16 +2670,12 @@ defmodule Explorer.Chain do
     end
   end
 
-  #@spec get_proxied_address(Hash.Address.t()) :: ProxyContract.t() | nil
   def get_proxied_address(address_hash) do
-    Logger.info("--getProxiedAddress: #{address_hash}")
     query =
       from(contract in ProxyContract,
         where: contract.proxy_address == ^address_hash
       )
-    Logger.info("--after query")
 
-    #Repo.one(query)
     query
     |> Repo.one()
     |> case do

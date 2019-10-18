@@ -7,8 +7,6 @@ defmodule Explorer.Chain.ProxyContract do
   http://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html
   """
 
-  require Logger
-
   use Explorer.Schema
 
   alias Explorer.Chain.{Hash}
@@ -25,22 +23,8 @@ defmodule Explorer.Chain.ProxyContract do
              }
 
   schema "proxy_contract" do
-#    belongs_to(
-#      :proxy_address,
-#      Address,
-#      type: Hash.Address
-#    )
-#    belongs_to(
-#      :implementation_address,
-#      Address,
-#      type: Hash.Address
-#    )
-#    field(:proxy_address, :string)
-#    field(:implementation_address, :string)
-
     field(:proxy_address, Hash.Address)
     field(:implementation_address, Hash.Address)
-
   end
 
   def changeset(%__MODULE__{} = proxy_contract, attrs) do
