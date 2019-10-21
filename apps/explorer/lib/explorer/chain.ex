@@ -2628,12 +2628,14 @@ defmodule Explorer.Chain do
       |> Changeset.put_change(:external_libraries, external_libraries)
 
     address_hash = Changeset.get_field(smart_contract_changeset, :address_hash)
+    proxy_address =
 
     # Enforce ShareLocks tables order (see docs: sharelocks.md)
     insert_result =
       Multi.new()
       |> Multi.run(:set_address_verified, fn repo, _ -> set_address_verified(repo, address_hash) end)
       |> Multi.run(:clear_primary_address_names, fn repo, _ -> clear_primary_address_names(repo, address_hash) end)
+      |> Multi.run(:set_address_proxy, fn repo, _ -> set_address_proxy(repo, address_hash, proxy_address) end)
       |> Multi.run(:insert_address_name, fn repo, _ ->
         name = Changeset.get_field(smart_contract_changeset, :name)
         create_address_name(repo, name, address_hash)
@@ -2677,6 +2679,20 @@ defmodule Explorer.Chain do
       {1, _} -> {:ok, []}
       _ -> {:error, "There was an error annotating that the address has been decompiled."}
     end
+  end
+
+  defp set_address_proxy(repo, proxy_address, implementation_address) do
+    params = %{
+      proxy_address: proxy_address,
+      implementation_address: implementation_address
+    }
+
+    %ProxyContract{}
+    |> ProxyContract.changeset(params)
+    |> repo.insert(
+         on_conflict: :replace_all,
+         conflict_target: [:proxy_address, :implementation_address])
+
   end
 
   defp clear_primary_address_names(repo, address_hash) do
@@ -2746,7 +2762,7 @@ defmodule Explorer.Chain do
     |> case do
       nil -> {:error, :not_found}
       proxy_contract -> {:ok, proxy_contract.implementation_address}
-    end    
+    end
   end
 
   @spec address_hash_to_smart_contract(Hash.Address.t()) :: SmartContract.t() | nil
